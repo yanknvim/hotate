@@ -8,6 +8,7 @@ use nix::unistd::{chdir, fork, ForkResult};
 use nix::sys::wait::waitpid;
 
 fn main() {
+    println!("Hotate shell v0.1.0");
     loop {
         shell_loop();
     }
@@ -47,7 +48,7 @@ fn run_cd(args: Vec<String>) {
     }else{
         match chdir(args[1].as_str()) {
             Ok(_) => {}
-            Err(_) => println!("hotate: invalid path")
+            Err(_) => println!("hotate: invalid argument")
         }
     }
 }
