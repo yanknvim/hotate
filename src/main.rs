@@ -8,7 +8,7 @@ use nix::unistd::{chdir, fork, ForkResult};
 use nix::sys::wait::waitpid;
 
 fn main() {
-    println!("Hotate shell v0.1.0");
+    println!("Hotate shell v0.1.1");
     loop {
         shell_loop();
     }
@@ -38,6 +38,7 @@ fn execute(args: Vec<String>) {
     match args[0].as_str() {
         "cd" => run_cd(args),
         "exit" => run_exit(),
+        "help" => run_help(),
         _ => run_external_command(args),
     }
 }
@@ -55,6 +56,10 @@ fn run_cd(args: Vec<String>) {
 
 fn run_exit() {
     exit(0);
+}
+
+fn run_help() {
+    println!("Hotate shell v0.1.1");
 }
 
 fn run_external_command(args: Vec<String>) {

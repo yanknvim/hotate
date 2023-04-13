@@ -1,1 +1,1 @@
-/Users/cooyamc/Documents/rust_shell/target/debug/hotate: /Users/cooyamc/Documents/rust_shell/src/main.rs
+/Users/cooyamc/Documents/hotate/target/debug/hotate: /Users/cooyamc/Documents/hotate/src/main.rs
