@@ -1,29 +1,40 @@
+// Hotate shell v0.1.2
+
 use std::ffi::CString;
-use std::io::stdin;
-use std::io::{stdout, Write};
+use std::env;
+use std::io::{stdin, stdout, Write};
 use std::process::exit;
 
-use nix::unistd::execvp;
-use nix::unistd::{chdir, fork, ForkResult};
+use nix::unistd::{execvp, chdir, fork, ForkResult};
 use nix::sys::wait::waitpid;
 
+use dirs::home_dir;
+
 fn main() {
-    println!("Hotate shell v0.1.1");
+    println!("Hotate shell v0.1.2");
     loop {
         shell_loop();
     }
 }
 
 fn shell_loop() {
-    print!("> ");
-    stdout().flush().unwrap();
+    show_prompt();
     let input = get_input();
     execute(input);
 }
 
+fn show_prompt() {
+    let current_directory = env::current_dir().expect("hotate: failed to read current directory");
+    print!("{} > ", current_directory.display());
+    stdout().flush().unwrap();
+}
+
 fn get_input() -> Vec<String> {
     let mut buffer = String::new();
-    stdin().read_line(&mut buffer);
+    match stdin().read_line(&mut buffer) {
+        Ok(_) => {}
+        Err(_) => println!("hotate: failed to read input")
+    }
     
     let input: Vec<String> = buffer
                     .as_str()
@@ -35,6 +46,9 @@ fn get_input() -> Vec<String> {
 }
 
 fn execute(args: Vec<String>) {
+    if args.len() == 0 {
+        return;
+    }
     match args[0].as_str() {
         "cd" => run_cd(args),
         "exit" => run_exit(),
@@ -45,11 +59,14 @@ fn execute(args: Vec<String>) {
 
 fn run_cd(args: Vec<String>) {
     if args.len() < 2 {
-        println!("hotate: invalid argument");
+        match chdir(&home_dir().unwrap()) {
+            Ok(_) => {}
+            Err(_) => println!("cd: failed to chdir")
+        }
     }else{
         match chdir(args[1].as_str()) {
             Ok(_) => {}
-            Err(_) => println!("hotate: invalid argument")
+            Err(_) => println!("cd: invalid argument")
         }
     }
 }
@@ -59,7 +76,10 @@ fn run_exit() {
 }
 
 fn run_help() {
-    println!("Hotate shell v0.1.1");
+    println!("Hotate shell v0.1.2");
+    println!("cd: move current directory");
+    println!("exit: exit Hotate");
+    println!("help: show this help");
 }
 
 fn run_external_command(args: Vec<String>) {
